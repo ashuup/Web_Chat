@@ -1,18 +1,18 @@
-import React from 'react';
-import EventRegistrationForm from './components/EventRegistrationForm';
-import './App.css';  // Import the CSS file
-
-const App = () => {
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SetAvatar from "./components/SetAvatar";
+import Chat from "./pages/Chat";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Event Registration</h1>
-      </header>
-      <main>
-        <EventRegistrationForm />
-      </main>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/setAvatar" element={<SetAvatar />} />
+        <Route path="/" element={<Chat />} />
+      </Routes>
+    </BrowserRouter>
   );
-};
-
-export default App;
+}
