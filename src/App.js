@@ -5,34 +5,40 @@ import io from "socket.io-client";
 import Signup from './components/Signup';
 import HomePage from './components/HomePage';
 import Login from './components/Login';
-import { setSocket } from './redux/socketSlice';
+import { setSocket, clearSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/userSlice';
 import { BASE_URL_SOCKET } from './index';
 import './App.css';
 
 function App() {
-  const { authUser } = useSelector(store => store.user);
-  const { socket } = useSelector(store => store.socket);
+  const authUser = useSelector(store => store.user.authUser);
+  const socket = useSelector(store => store.socket.socket);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    let socketio;
+
     if (authUser) {
-      const socketio = io(`${BASE_URL_SOCKET}`, {
+      socketio = io(`${BASE_URL_SOCKET}`, {
         query: {
           userId: authUser._id
         }
       });
-      dispatch(setSocket(socketio));
 
-      socketio?.on('getOnlineUsers', (onlineUsers) => {
+      socketio.on('getOnlineUsers', (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
 
-      return () => socketio.close();
+      dispatch(setSocket(socketio));
+
+      return () => {
+        socketio.disconnect();
+        dispatch(clearSocket());
+      };
     } else {
       if (socket) {
-        socket.close();
-        dispatch(setSocket(null));
+        socket.disconnect();
+        dispatch(clearSocket());
       }
     }
   }, [authUser, dispatch, socket]);
