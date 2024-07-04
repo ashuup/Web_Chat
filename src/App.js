@@ -9,6 +9,7 @@ import { setSocket, clearSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/userSlice';
 import { BASE_URL_SOCKET } from './index';
 import './App.css';
+import Home from './components/Home';
 
 function App() {
   const authUser = useSelector(store => store.user.authUser);
@@ -44,7 +45,9 @@ function App() {
 
   return (
     <div className="p-4 h-screen flex items-center justify-center">
+      
       <Routes>
+      <Route path="/home" element={<Home/>} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />

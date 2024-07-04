@@ -3,6 +3,7 @@ import { Message } from "../models/messageModel.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = async (req,res) => {
+    console.log("send message run successfully");
     try {
         const senderId = req.id;
         const receiverId = req.params.id;

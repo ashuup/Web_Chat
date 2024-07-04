@@ -15,12 +15,10 @@ const SendInput = () => {
         e.preventDefault();
         try {
             const res = await axios.post(`${BASE_URL_SOCKET}/api/v1/message/send/${selectedUser?._id}`, {message}, {
-                headers:{
-                    'Content-Type':'application/json'
-                },
                 withCredentials:true
             });
             dispatch(setMessages([...messages, res?.data?.newMessage]))
+            console.log(" the response is this ",res);
         } catch (error) {
             console.log(error);
         } 
