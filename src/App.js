@@ -12,13 +12,13 @@ import './App.css';
 
 function App() {
   const authUser = useSelector(store => store.user.authUser);
-  const socket = useSelector(store => store.socket.socket);
+  const socketId = useSelector(store => store.socket.socketId); // Use socketId instead of entire socket object
   const dispatch = useDispatch();
 
   useEffect(() => {
     let socketio;
 
-    if (authUser) {
+    if (authUser && !socketId) { // Check if socketId exists to prevent reconnecting on each render
       socketio = io(`${BASE_URL_SOCKET}`, {
         query: {
           userId: authUser._id
@@ -29,19 +29,18 @@ function App() {
         dispatch(setOnlineUsers(onlineUsers));
       });
 
-      dispatch(setSocket(socketio));
+      dispatch(setSocket({ id: socketio.id })); // Dispatch socket ID or relevant data
+      // You may dispatch other serializable data if needed
 
       return () => {
         socketio.disconnect();
         dispatch(clearSocket());
       };
-    } else {
-      if (socket) {
-        socket.disconnect();
-        dispatch(clearSocket());
-      }
+    } else if (!authUser && socketId) {
+      // Clear socket when user logs out
+      dispatch(clearSocket());
     }
-  }, [authUser, dispatch, socket]);
+  }, [authUser, dispatch, socketId]);
 
   return (
     <div className="p-4 h-screen flex items-center justify-center">
