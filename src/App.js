@@ -1,63 +1,50 @@
+import React, { useEffect } from 'react';
+import { Routes, Route } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import io from "socket.io-client";
 import Signup from './components/Signup';
-import './App.css';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import HomePage from './components/HomePage';
 import Login from './components/Login';
-import { useEffect } from 'react';
-import {useSelector,useDispatch} from "react-redux";
-import io from "socket.io-client";
 import { setSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/userSlice';
-import { BASE_URL } from '.';
+import { BASE_URL_SOCKET } from './index';
+import './App.css';
 
-const router = createBrowserRouter([
-  {
-    path:"/",
-    element:<HomePage/>
-  },
-  {
-    path:"/signup",
-    element:<Signup/>
-  },
-  {
-    path:"/login",
-    element:<Login/>
-  },
-
-])
-
-function App() { 
-  const {authUser} = useSelector(store=>store.user);
-  const {socket} = useSelector(store=>store.socket);
+function App() {
+  const { authUser } = useSelector(store => store.user);
+  const { socket } = useSelector(store => store.socket);
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    if(authUser){
-      const socketio = io(`${BASE_URL}`, {
-          query:{
-            userId:authUser._id
-          }
+  useEffect(() => {
+    if (authUser) {
+      const socketio = io(`${BASE_URL_SOCKET}`, {
+        query: {
+          userId: authUser._id
+        }
       });
       dispatch(setSocket(socketio));
 
-      socketio?.on('getOnlineUsers', (onlineUsers)=>{
-        dispatch(setOnlineUsers(onlineUsers))
+      socketio?.on('getOnlineUsers', (onlineUsers) => {
+        dispatch(setOnlineUsers(onlineUsers));
       });
+
       return () => socketio.close();
-    }else{
-      if(socket){
+    } else {
+      if (socket) {
         socket.close();
         dispatch(setSocket(null));
       }
     }
-
-  },[authUser]);
+  }, [authUser, dispatch, socket]);
 
   return (
     <div className="p-4 h-screen flex items-center justify-center">
-      <RouterProvider router={router}/>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </div>
-
   );
 }
 
