@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux";
-import { setAuthUser } from '../redux/userSlice';
+import { setAuthUser,setIlogin } from '../redux/userSlice';
 import { login } from '../service/operations/authAPI';
 
 const Login = () => {
@@ -18,7 +18,8 @@ const Login = () => {
     const {username,password} = user;
     try {
       const res = await login(username,password);
-      navigate("/");
+      setIlogin(true);
+      navigate("/chat");
       console.log(res);
       dispatch(setAuthUser(res.data));
     } catch (error) {

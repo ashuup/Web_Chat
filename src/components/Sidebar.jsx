@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BiSearchAlt2 } from "react-icons/bi";
 import OtherUsers from './OtherUsers';
 import toast from "react-hot-toast";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import { setAuthUser, setOtherUsers, setSelectedUser } from '../redux/userSlice';
 import { setMessages } from '../redux/messageSlice';
@@ -18,8 +18,9 @@ const Sidebar = () => {
     const logoutHandler = async () => {
         try {
             const res = await logout();
-            navigate("/login");
+            navigate("/home");
             toast.success(res.data.message);
+            toast.success("logged Out Successfully!")
             dispatch(setAuthUser(null));
             dispatch(setMessages(null));
             dispatch(setOtherUsers(null));
@@ -53,7 +54,9 @@ const Sidebar = () => {
             <div className="divider px-3"></div> 
             <OtherUsers/> 
             <div className='mt-2'>
-                <button onClick={logoutHandler} className='btn btn-sm'>Logout</button>
+            <Link to='/logout'>
+            <button onClick={logoutHandler} className='btn btn-sm'>Logout</button>  
+            </Link>
             </div>
         </div>
     )
